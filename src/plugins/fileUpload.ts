@@ -39,7 +39,7 @@ export default class FileUpload {
         if (this.hasExistingFile() && this.existingFileNameInput.val() == "")
             this.showExistingFile();
 
-        this.input.fileupload({
+        let options = {
             dataType: 'json',
             dropZone: this.container,
             replaceFileInput: false,
@@ -49,7 +49,17 @@ export default class FileUpload {
             error: this.onUploadError,
             success: this.onUploadSuccess.bind(this),
             xhrFields: {withCredentials: true}
-        });
+        };
+
+        let maxFileSize:number = Number( this.input.attr('data-maxfilesize'));
+        if (!isNaN(maxFileSize)) 
+            options = $.extend(options, { maxFileSize:maxFileSize });
+
+        let acceptedFileTypes:string =  this.input.data('data-acceptedfiletypes');
+        if (acceptedFileTypes !== undefined) 
+                options = $.extend(options, { acceptedfiletypes:acceptedFileTypes });
+
+        this.input.fileupload(options);
     }
 
     hasExistingFile(): boolean {
